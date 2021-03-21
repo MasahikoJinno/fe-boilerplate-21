@@ -1,28 +1,44 @@
-import React from 'react'
-import _App from 'next/app'
+import React, { FC } from 'react'
+import { AppProps } from 'next/app'
 import Head from 'next/head'
+import getConfig from 'next/config'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 // import 'firebase/firestore'
 // import 'firebase/analytics'
 
-firebase.initializeApp({})
+import { useLogin, UserContext } from '../auth/useLogin'
 
-type Props = {}
+const firebaseConfig = getConfig()?.publicRuntimeConfig?.firebase?.config
 
-export class App extends _App<Props> {
-  render() {
-    const { Component } = this.props
+if (firebase.apps.length === 0) {
+  firebase.initializeApp(firebaseConfig)
+}
 
-    return (
-      <>
-        <Head>
-          <title>my next app</title>
-        </Head>
-        <Component />
-      </>
-    )
+const App: FC<AppProps> = ({ Component }) => {
+  const [authStateChecked, user, login] = useLogin()
+
+  if (!authStateChecked) {
+    return <p>...loading</p>
   }
+
+  return (
+    <>
+      <Head>
+        <title>my next app</title>
+      </Head>
+      {process.browser && (
+        <UserContext.Provider
+          value={{
+            user,
+            login
+          }}
+        >
+          <Component />
+        </UserContext.Provider>
+      )}
+    </>
+  )
 }
 
 export default App
