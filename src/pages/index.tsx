@@ -1,9 +1,13 @@
-import React, { FC } from 'react'
+import React, { FC, useContext } from 'react'
 import Link from 'next/link'
 
+import { UserContext } from '../auth/useLogin'
 import { useCSR } from '../routing/useCSR'
 
 const Home: FC = () => {
+  const user = useContext(UserContext)
+  console.log('index.tsx user:', user)
+
   const execRouting = useCSR()
 
   if (!execRouting) {

@@ -1,7 +1,7 @@
-import Router from 'next/router'
 import { useState, useEffect } from 'react'
+import Router from 'next/router'
 
-import { APP_ROUTES } from './route'
+import { APP_PATHS } from './paths'
 
 export const useCSR = (): boolean => {
   const [execRouting, setExecRouting] = useState(false)
@@ -11,9 +11,9 @@ export const useCSR = (): boolean => {
       location: { pathname }
     } = window
 
-    const isCSR = APP_ROUTES.some(route => {
-      if (new RegExp(`^${route.pattern}$`).test(pathname)) {
-        Router.replace(route.href, pathname).then()
+    const isCSR = APP_PATHS.some(async path => {
+      if (new RegExp(`^${path.pattern}$`).test(pathname)) {
+        await Router.replace(path.href, pathname)
         return true
       }
     })
